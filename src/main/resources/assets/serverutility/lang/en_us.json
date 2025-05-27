@@ -1,0 +1,5 @@
+{
+  "itemGroup.serverutility": "Example Mod Tab",
+  "block.serverutility.example_block": "Example Block",
+  "item.serverutility.example_item": "Example Item"
+}
