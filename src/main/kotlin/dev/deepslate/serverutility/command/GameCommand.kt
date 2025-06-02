@@ -1,10 +1,9 @@
 package dev.deepslate.serverutility.command
 
+//import dev.deepslate.fallacy.permission.PermissionManager
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
-//import dev.deepslate.fallacy.permission.PermissionManager
 import net.minecraft.commands.CommandSourceStack
-import net.minecraft.server.level.ServerPlayer
 
 interface GameCommand {
     val source: String

@@ -1,0 +1,121 @@
+package dev.deepslate.serverutility.territory
+
+import dev.deepslate.serverutility.ServerUtility
+import dev.deepslate.serverutility.utils.SnowID
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
+import net.minecraft.core.HolderLookup
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
+import net.minecraft.world.level.saveddata.SavedData
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.fml.common.EventBusSubscriber
+import net.neoforged.neoforge.event.server.ServerStartedEvent
+import net.neoforged.neoforge.event.server.ServerStoppingEvent
+import org.slf4j.LoggerFactory
+
+class TownManager {
+    companion object {
+        private val logger = LoggerFactory.getLogger(TownManager::class.java)
+
+        var INSTANCE: TownManager = TownManager()
+    }
+
+    @EventBusSubscriber(modid = ServerUtility.ID)
+    object Handler {
+        @SubscribeEvent
+        fun onServerStarted(event: ServerStartedEvent) {
+            val server = event.server
+            val overworld = server.overworld()
+
+            logger.info("Loading towns...")
+
+            val saved = overworld.dataStorage.get(SavedTowns.FACTORY, SavedTowns.KEY).let { data ->
+                if (data == null) {
+                    logger.info("No saved towns data found.")
+                    logger.info("Creating new towns data.")
+
+                    val ret = SavedTowns.of().let {
+                        overworld.dataStorage.set(SavedTowns.KEY, it)
+                        it
+                    }
+
+                    ret
+                } else data
+            }
+
+            saved.data.forEach(INSTANCE::manage)
+            logger.info("Loaded ${INSTANCE.managedTown.size} towns.")
+            logger.info("Loaded towns finished.")
+        }
+
+        @SubscribeEvent
+        fun onServerStopping(event: ServerStoppingEvent) {
+            val server = event.server
+            val overworld = server.overworld()
+
+            logger.info("Saving towns...")
+
+            val data = INSTANCE.managedTown.values.toList()
+
+            overworld.dataStorage.set(SavedTowns.KEY, SavedTowns(data))
+            logger.info("Saved ${data.size} towns.")
+            logger.info("Saving towns finished.")
+        }
+    }
+
+    private val managedTown = Long2ObjectOpenHashMap<Town>()
+
+    fun manage(town: Town) {
+        managedTown[town.id.value] = town
+    }
+
+    operator fun get(id: SnowID): Town? = managedTown[id.value]
+
+    private data class SavedTowns(val data: List<Town>) : SavedData() {
+
+        companion object {
+
+            private val codec = Town.CODEC.listOf()
+
+            fun of() = SavedTowns(emptyList())
+
+            private fun load(tag: CompoundTag, provider: HolderLookup.Provider): SavedTowns {
+                val nbt = tag.get(KEY)
+
+                try {
+                    val list = codec.decode(NbtOps.INSTANCE, nbt).orThrow.first
+
+                    return SavedTowns(list)
+                } catch (e: IllegalStateException) {
+                    logger.error("Failed to load towns.")
+                    logger.error(e.stackTraceToString())
+                }
+                return of()
+            }
+
+            val FACTORY = Factory(::of, ::load)
+
+            const val KEY = "towns"
+        }
+
+        init {
+            markUnsaved()
+        }
+
+        override fun save(tag: CompoundTag, registries: HolderLookup.Provider): CompoundTag {
+            try {
+                val nbt = codec.encodeStart(NbtOps.INSTANCE, data).orThrow
+                tag.put(KEY, nbt)
+            } catch (e: IllegalStateException) {
+                logger.error("Failed to save towns.")
+                logger.error(e.stackTraceToString())
+            }
+
+            return tag
+        }
+
+        fun markUnsaved() {
+            isDirty = true
+        }
+    }
+}

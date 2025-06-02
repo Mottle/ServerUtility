@@ -3,8 +3,6 @@ package dev.deepslate.serverutility
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.level.saveddata.SavedData
-import net.neoforged.api.distmarker.Dist
-import net.neoforged.api.distmarker.OnlyIn
 import net.neoforged.bus.api.EventPriority
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -40,7 +38,7 @@ sealed class Calendar {
         count++
     }
 
-//    @OnlyIn(Dist.DEDICATED_SERVER)
+    //    @OnlyIn(Dist.DEDICATED_SERVER)
     class ServerCalendar : Calendar() {
 //        override fun tick() {
 //            super.tick()
@@ -64,14 +62,14 @@ sealed class Calendar {
         private val factory = SavedData.Factory(SavedTime::create, SavedTime::load)
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        fun onServerStop(event: ServerStoppingEvent) {
+        fun onServerStopping(event: ServerStoppingEvent) {
             val server = event.server
             val overworld = server.overworld()
             overworld.dataStorage.set(KEY, SavedTime.create())
         }
 
         @SubscribeEvent
-        fun onServerStart(event: ServerStartedEvent) {
+        fun onServerStarted(event: ServerStartedEvent) {
             val overworld = event.server.overworld()
             val data = overworld.dataStorage.computeIfAbsent(factory, KEY)
             INSTANCE.update { data.count }

@@ -6,7 +6,6 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.SharedSuggestionProvider
-import net.minecraft.resources.ResourceLocation
 import java.util.concurrent.CompletableFuture
 
 class SimpleSuggestionProvider(val factory: (CommandContext<CommandSourceStack>) -> List<String>) :

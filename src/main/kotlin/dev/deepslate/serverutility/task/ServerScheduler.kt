@@ -1,6 +1,6 @@
 package dev.deepslate.serverutility.task
 
-import com.github.yitter.idgen.YitIdHelper
+import dev.deepslate.serverutility.utils.SnowID
 import it.unimi.dsi.fastutil.PriorityQueue
 import it.unimi.dsi.fastutil.objects.ObjectHeapPriorityQueue
 import net.neoforged.neoforge.server.ServerLifecycleHooks
@@ -82,7 +82,12 @@ class ServerScheduler : Scheduler {
         }
     }
 
-    private class SyncedTask(val originTick: Int, val delay: Int, val period: Int, val executable: ScheduledExecutable) : Task,
+    private class SyncedTask(
+        val originTick: Int,
+        val delay: Int,
+        val period: Int,
+        val executable: ScheduledExecutable
+    ) : Task,
         Runnable {
 
         override var state: TaskState = TaskState.UNSCHEDULED
@@ -93,7 +98,7 @@ class ServerScheduler : Scheduler {
 
         val correctedTick get() = originTick + delay + period * runningCount
 
-        override val taskID: Long = YitIdHelper.nextId()
+        override val taskID: SnowID = SnowID.generate()
 
         override fun tryCancel(): Boolean {
             if (state != TaskState.UNSCHEDULED) return false

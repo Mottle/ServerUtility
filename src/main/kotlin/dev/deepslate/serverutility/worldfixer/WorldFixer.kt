@@ -8,14 +8,17 @@ import dev.deepslate.serverutility.task.ServerScheduler
 import dev.deepslate.serverutility.task.StateSetter
 import dev.deepslate.serverutility.task.TaskState
 import net.minecraft.core.BlockPos
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ChunkHolder
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.event.level.BlockEvent
 import net.neoforged.neoforge.event.level.ExplosionEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
+import net.neoforged.neoforge.server.ServerLifecycleHooks
 
 //@OnlyIn(Dist.DEDICATED_SERVER)
 @EventBusSubscriber(modid = ServerUtility.ID)
@@ -89,7 +92,7 @@ object WorldFixer {
 
         if (ticks % tickInterval != 0) return
 
-        val fixTasksMap = mutableMapOf<ServerLevel, MutableList<List<BlockStateChangeRecord>>>()
+        val fixTasksMap = mutableMapOf<ResourceKey<Level>, MutableList<List<BlockStateChangeRecord>>>()
         for (level in server.allLevels) {
             val fixTasks = mutableListOf<List<BlockStateChangeRecord>>()
             val chunks = level.chunkSource.chunkMap.chunks
@@ -107,7 +110,7 @@ object WorldFixer {
                 fixTasks.add(chunkFix)
             }
 
-            fixTasksMap[level] = fixTasks
+            fixTasksMap[level.dimension()] = fixTasks
 
 //            val size = chunkRecords.sumOf(ChunkBlockStateChangeRecord::size)
 //
@@ -121,22 +124,24 @@ object WorldFixer {
 //            fixTasksMap[level] = fixTasks
         }
 
-        if (fixTasksMap.isNotEmpty()) ServerScheduler.INSTANCE.schedule(generateFixRunnable(fixTasksMap))
+        if (fixTasksMap.isNotEmpty()) ServerScheduler.INSTANCE.schedule(generateWorldFixExecutable(fixTasksMap))
     }
 
-    fun generateFixRunnable(fixList: Map<ServerLevel, MutableList<List<BlockStateChangeRecord>>>) =
+    fun generateWorldFixExecutable(fixList: Map<ResourceKey<Level>, MutableList<List<BlockStateChangeRecord>>>) =
         object : ScheduledExecutable {
 
             val tasks = fixList
 
             override fun execute(stateSetter: StateSetter) {
-                for ((level, fixGroup) in tasks) {
+                for ((dimension, fixGroup) in tasks) {
                     val blocksNeedFix = fixGroup.removeFirstOrNull()
+                    val server = ServerLifecycleHooks.getCurrentServer()
+                    val level = server?.getLevel(dimension)
 
                     if (blocksNeedFix == null) continue
 
                     blocksNeedFix.forEach { record ->
-                        level.setBlockAndUpdate(record.pos, record.changed)
+                        level?.setBlockAndUpdate(record.pos, record.changed)
                     }
                 }
 

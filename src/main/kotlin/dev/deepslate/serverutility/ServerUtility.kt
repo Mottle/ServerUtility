@@ -2,11 +2,9 @@ package dev.deepslate.serverutility
 
 import com.github.yitter.contract.IdGeneratorOptions
 import com.github.yitter.idgen.YitIdHelper
-import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.fml.common.Mod
-import org.apache.logging.log4j.Level
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 
@@ -14,10 +12,10 @@ import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 object ServerUtility {
     const val ID = "serverutility"
 
-    val LOGGER: Logger = LogManager.getLogger(ID)
+    val LOGGER: Logger = LoggerFactory.getLogger(ID)
 
     init {
-        LOGGER.log(Level.INFO, "Hello world!")
+        LOGGER.info("Hello world!")
 
         val options = IdGeneratorOptions()
         YitIdHelper.setIdGenerator(options)
