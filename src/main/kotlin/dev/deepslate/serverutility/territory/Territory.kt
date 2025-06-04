@@ -42,9 +42,28 @@ data class Territory(val id: SnowID, val dimension: ResourceKey<Level>, val incl
 
     fun contains(chunkPos: ChunkPos) = includeChunks.contains(chunkPos)
 
-    infix operator fun plus(chunkPos: ChunkPos) = copy(includeChunks = includeChunks + chunkPos)
+    infix operator fun plus(chunkPos: ChunkPos) =
+        if (!contains(chunkPos)) copy(includeChunks = includeChunks + chunkPos) else this
 
-    infix operator fun plus(chunkPositions: List<ChunkPos>) = copy(includeChunks = includeChunks + chunkPositions)
+    infix operator fun plus(chunkPositions: List<ChunkPos>) =
+        copy(includeChunks = (includeChunks + chunkPositions).distinct())
 
     infix operator fun minus(chunkPos: ChunkPos) = copy(includeChunks = includeChunks - chunkPos)
+
+    val chunkCount = includeChunks.size
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (other !is Territory) return false
+        if (other.id == id && other.dimension == dimension) return true
+        return false
+    }
+
+    override fun hashCode(): Int {
+        var result = chunkCount
+        result = 31 * result + id.hashCode()
+        result = 31 * result + dimension.hashCode()
+//        result = 31 * result + includeChunks.hashCode()
+        return result
+    }
 }

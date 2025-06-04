@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import net.minecraft.core.HolderLookup
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
+import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.saveddata.SavedData
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -17,7 +18,9 @@ class TownManager {
     companion object {
         private val logger = LoggerFactory.getLogger(TownManager::class.java)
 
-        var INSTANCE: TownManager = TownManager()
+        val INSTANCE: TownManager = TownManager()
+
+        operator fun get(chunkPos: ChunkPos) = INSTANCE[chunkPos]
     }
 
     @EventBusSubscriber(modid = ServerUtility.ID)
@@ -34,12 +37,10 @@ class TownManager {
                     logger.info("No saved towns data found.")
                     logger.info("Creating new towns data.")
 
-                    val ret = SavedTowns.of().let {
+                    SavedTowns.of().let {
                         overworld.dataStorage.set(SavedTowns.KEY, it)
                         it
                     }
-
-                    ret
                 } else data
             }
 
@@ -70,6 +71,8 @@ class TownManager {
     }
 
     operator fun get(id: SnowID): Town? = managedTown[id.value]
+
+    operator fun get(chunkPos: ChunkPos): Town? = managedTown.values.find { town -> town.contains(chunkPos) }
 
     private data class SavedTowns(val data: List<Town>) : SavedData() {
 

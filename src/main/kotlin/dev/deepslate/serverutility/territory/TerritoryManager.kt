@@ -15,9 +15,12 @@ import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.event.server.ServerStartedEvent
 import net.neoforged.neoforge.event.server.ServerStoppingEvent
+import net.neoforged.neoforge.server.ServerLifecycleHooks
 import org.slf4j.LoggerFactory
 
 class TerritoryManager(val forLevel: ResourceKey<Level>) {
+
+    val level get() = ServerLifecycleHooks.getCurrentServer()?.getLevel(forLevel)
 
     companion object {
         private val managerMap: Object2ObjectOpenHashMap<ResourceKey<Level>, TerritoryManager> =
@@ -47,12 +50,10 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
                     if (data == null) {
                         logger.info("No saved territories data found for ${level.dimension().location()}.")
                         logger.info("Creating new territories data for ${level.dimension().location()}.")
-                        val ret = SavedTerritories.of().let {
+                        SavedTerritories.of().let {
                             level.dataStorage.set(SavedTerritories.KEY, it)
                             it
                         }
-
-                        ret
                     } else data
                 }
 

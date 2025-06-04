@@ -1,0 +1,3 @@
+package dev.deepslate.serverutility.territory.protection.permission
+
+interface ProtectionPermission
