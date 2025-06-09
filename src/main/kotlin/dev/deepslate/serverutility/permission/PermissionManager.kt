@@ -20,7 +20,7 @@ object PermissionManager : PermissionProvider by instance {
         fun onServerAboutToStart(event: ServerAboutToStartEvent) {
             val luckPerms = FMLLoader.getLoadingModList().mods.any { mod -> mod.modId == "luckperms" }
 
-            if (luckPerms) {
+            if (luckPerms && event.server.isDedicatedServer) {
                 instance = LuckPermsProvider()
             }
             logger.info("Using ${instance.name} for permissions")
