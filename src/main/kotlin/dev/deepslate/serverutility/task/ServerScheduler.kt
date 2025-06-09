@@ -43,9 +43,7 @@ class ServerScheduler : Scheduler {
 
         if (!onceTasks.isEmpty && onceTasks.first().correctedTick < tick) {
             while (onceTasks.first().correctedTick != tick) {
-                onceTasks.dequeue().let { t ->
-                    t.state = TaskState.ERRORED
-                }
+                onceTasks.dequeue().state = TaskState.ERRORED
             }
         }
 

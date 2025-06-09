@@ -19,6 +19,8 @@ data class SnowID(val value: Long) {
             StreamCodec.composite(ByteBufCodecs.VAR_LONG, SnowID::value, ::SnowID)
 
         fun generate() = YitIdHelper.nextId().let(::SnowID)
+
+        val EMPTY = SnowID(0)
     }
 
     override fun hashCode(): Int = value.hashCode()

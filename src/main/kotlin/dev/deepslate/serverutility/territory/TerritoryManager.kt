@@ -34,6 +34,10 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
         fun findTerritoryIncludingChunk(chunkPos: ChunkPos) =
             managerMap.values.map { m -> m.findTerritoryIncludingChunk(chunkPos) }.firstOrNull()
 
+        fun manage(territory: Territory) {
+            managerMap[territory.dimension]?.manage(territory)
+        }
+
         private val logger = LoggerFactory.getLogger(TerritoryManager::class.java)
     }
 
@@ -41,6 +45,7 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
     object Handler {
         @SubscribeEvent
         fun onServerStarted(event: ServerStartedEvent) {
+            managerMap.clear()
             val server = event.server
             logger.info("Loading territories...")
             server.allLevels.forEach { level ->
@@ -88,7 +93,7 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
 
     operator fun get(id: SnowID): Territory? = managedTerritory[id.value]
 
-    fun isIncluding(chunkPos: ChunkPos) = managedTerritory.values.any { t -> t.contains(chunkPos) }
+    fun includes(chunkPos: ChunkPos) = managedTerritory.values.any { t -> t.contains(chunkPos) }
 
     fun findTerritoryIncludingChunk(chunkPos: ChunkPos) = managedTerritory.values.find { t -> t.contains(chunkPos) }
 

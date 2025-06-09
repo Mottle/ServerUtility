@@ -1,9 +1,10 @@
 package dev.deepslate.serverutility.command
 
-//import dev.deepslate.fallacy.permission.PermissionManager
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
+import dev.deepslate.serverutility.permission.PermissionManager
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.server.level.ServerPlayer
 
 interface GameCommand {
     val source: String
@@ -14,6 +15,7 @@ interface GameCommand {
 
     fun execute(context: CommandContext<CommandSourceStack>): Int
 
-//    fun checkPermission(player: ServerPlayer): Boolean =
-//        if (permissionRequired != null) PermissionManager.query(player, permissionRequired!!).asBoolean() else true
+    fun checkPermission(player: ServerPlayer): Boolean =
+        if (permissionRequired != null) PermissionManager.query(player, permissionRequired!!)
+            .asBooleanStrictly() else true
 }

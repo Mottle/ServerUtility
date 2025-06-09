@@ -13,6 +13,7 @@ import net.minecraft.server.level.ChunkHolder
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
+import net.neoforged.bus.api.EventPriority
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.event.level.BlockEvent
@@ -35,8 +36,8 @@ object WorldFixer {
         if (chunkRecord.insert(record)) chunk.isUnsaved = true
     }
 
-    @SubscribeEvent
-    fun onPlayerBreakBlock(event: BlockEvent.BreakEvent) {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    fun onEntityBreakBlock(event: BlockEvent.BreakEvent) {
         if (event.level.isClientSide) return
         if (event.isCanceled) return
 
@@ -49,8 +50,8 @@ object WorldFixer {
         insert(record, level)
     }
 
-    @SubscribeEvent
-    fun onPlayerPlaceBlock(event: BlockEvent.EntityPlaceEvent) {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    fun onEntityPlaceBlock(event: BlockEvent.EntityPlaceEvent) {
         if (event.level.isClientSide) return
         if (event.isCanceled) return
         if (event.entity == null) return
@@ -62,7 +63,7 @@ object WorldFixer {
         insert(record, level)
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     fun onExplosion(event: ExplosionEvent.Detonate) {
         if (event.level.isClientSide) return
 

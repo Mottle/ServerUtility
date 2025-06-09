@@ -15,7 +15,7 @@ data class Town(
     val id: SnowID,
     val territoryIDs: List<SnowID>,
     val members: List<UUID>,
-    val name: Component,
+    val displayName: Component,
     val protection: Protection = Protection()
 ) {
     companion object {
@@ -24,10 +24,10 @@ data class Town(
                 SnowID.CODEC.fieldOf("id").forGetter(Town::id),
                 SnowID.CODEC.listOf().fieldOf("territory_ids").forGetter(Town::territoryIDs),
                 UUIDUtil.CODEC.listOf().fieldOf("members").forGetter(Town::members),
-                Codec.STRING.fieldOf("name").forGetter { t ->
+                Codec.STRING.fieldOf("display_name").forGetter { t ->
                     try {
                         Component.Serializer.toJson(
-                            t.name, ServerLifecycleHooks.getCurrentServer()!!.registryAccess()
+                            t.displayName, ServerLifecycleHooks.getCurrentServer()!!.registryAccess()
                         )
                     } catch (e: Exception) {
                         ""

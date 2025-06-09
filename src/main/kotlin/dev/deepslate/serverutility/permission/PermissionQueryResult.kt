@@ -5,8 +5,13 @@ enum class PermissionQueryResult {
     DENY,
     UNDEFINED;
 
-    fun asBoolean() = when (this) {
+    fun asBooleanStrictly() = when (this) {
         ALLOW -> true
         else -> false
+    }
+
+    fun asBooleanWeakly() = when (this) {
+        DENY -> false
+        else -> true
     }
 }

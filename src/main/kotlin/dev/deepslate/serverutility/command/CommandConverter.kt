@@ -20,7 +20,7 @@ class CommandConverter {
             if (context.source.player != null) {
                 val player = context.source.player!!
 
-                if (/*!command.checkPermission(player)*/true) {
+                if (!command.checkPermission(player)) {
                     context.source.sendFailure(Component.literal("u dont have permission to use this command"))
                     return@execution 0
                 }
