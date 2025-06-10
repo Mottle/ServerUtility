@@ -13,6 +13,7 @@ object Commands {
             commands += SpawnHome
             commands += SpawnHomeDefault
             commands += Suicide
+            commands += Fly
         }
     }
 }
