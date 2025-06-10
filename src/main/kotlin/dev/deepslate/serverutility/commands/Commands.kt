@@ -8,6 +8,11 @@ object Commands {
     init {
         if (commands.isEmpty()) {
             commands += SetHome
+            commands += SetHomeDefault
+            commands += ListHome
+            commands += SpawnHome
+            commands += SpawnHomeDefault
+            commands += Suicide
         }
     }
 }

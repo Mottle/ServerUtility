@@ -16,4 +16,12 @@ object ModAttachments {
                 ChunkBlockStateChangeRecord.CODEC
             ).build()
         }
+
+//    val HOMES: DeferredHolder<AttachmentType<*>, AttachmentType<SetHome.HomeRecordContainer>> =
+//        REGISTRY.register("homes") { _ ->
+//            AttachmentType.builder { _ -> SetHome.HomeRecordContainer() }
+//                .serialize(SetHome.HomeRecordContainer.CODEC)
+//                .copyOnDeath()
+//                .build()
+//        }
 }

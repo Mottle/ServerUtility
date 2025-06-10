@@ -18,4 +18,8 @@ interface GameCommand {
     fun checkPermission(player: ServerPlayer): Boolean =
         if (permissionRequired != null) PermissionManager.query(player, permissionRequired!!)
             .asBooleanStrictly() else true
+
+    fun asString() = source.split(' ').firstOrNull() ?: "?"
+
+    fun asContextString() = "${this.javaClass.name}(${asString()})"
 }
