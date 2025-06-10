@@ -19,7 +19,7 @@ object ListHome : GameCommand {
         val player = context.source.player ?: return 0
         val homeStorage = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.computeIfAbsent(
             SetHome.SavedHomes.FACTORY, SetHome.SavedHomes.KEY
-        ) ?: return 0
+        ) ?: throw CommandRuntimeException.of("Home storage is null.")
         val homes = homeStorage.query(player)
         if (homes != null && homes.isNotEmpty()) {
             context.source.sendSystemMessage(Component.literal(homes.joinToString("\n") { it.name }))

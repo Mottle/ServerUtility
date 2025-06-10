@@ -20,7 +20,7 @@ object SetHomeDefault : GameCommand {
         val player = context.source.player ?: return 0
         val homes = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.computeIfAbsent(
             SavedHomes.FACTORY, SavedHomes.KEY
-        ) ?: return 0
+        ) ?: throw CommandRuntimeException.of("Home storage is null.")
         homes.insert(
             player, HomeRecord(
                 "home",

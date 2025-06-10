@@ -20,7 +20,7 @@ object SpawnHomeDefault : GameCommand {
         val server = ServerLifecycleHooks.getCurrentServer() ?: return 0
         val homeStorage = server.overworld().dataStorage.computeIfAbsent(
             SetHome.SavedHomes.FACTORY, SetHome.SavedHomes.KEY
-        ) ?: return 0
+        ) ?: throw CommandRuntimeException.of("Home storage is null.")
         val home = homeStorage.query(player, "home")
 
         if (home == null) {
