@@ -6,6 +6,9 @@ import dev.deepslate.serverutility.ServerUtility
 import dev.deepslate.serverutility.command.lexer.CommandLexer
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.network.chat.Component
+import net.minecraft.server.MinecraftServer
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
 
 class CommandConverter {
 
@@ -17,15 +20,17 @@ class CommandConverter {
         val tokens = lexer.scan(command.source)
 
         val execution = execution@{ context: CommandContext<CommandSourceStack> ->
-            ServerUtility.LOGGER.info("${context.source.textName} executed ${command.asContextString()}")
-            if (context.source.player != null) {
-                val player = context.source.player!!
-
-                if (!command.checkPermission(player)) {
-                    context.source.sendFailure(Component.literal("u dont have permission to use this command."))
-                    return@execution 0
-                }
+            if (context.source.source is Player || context.source.source is Entity) {
+                ServerUtility.LOGGER.info("${context.source.textName} executed ${command.asContextString()}")
             }
+//            if (context.source.player != null) {
+//                val player = context.source.player!!
+//
+//                if (!command.checkPermission(player)) {
+//                    context.source.sendFailure(Component.literal("u dont have permission to use this command."))
+//                    return@execution 0
+//                }
+//            }
             return@execution try {
                 val ret = command.execute(context)
 
@@ -40,7 +45,18 @@ class CommandConverter {
             }
         }
 
-        val rawCommand = builder.fromTokens(tokens, execution, command.suggestions)
+        val rawCommand = builder.fromTokens(tokens, execution, command.suggestions).requires { source ->
+            if (source.source is MinecraftServer) return@requires true
+
+            val player = source.player ?: return@requires false
+
+            if (!command.checkPermission(player)) {
+                source.sendFailure(Component.literal("u dont have permission to use this command."))
+                return@requires false
+            }
+
+            return@requires true
+        }
         return rawCommand
     }
 }

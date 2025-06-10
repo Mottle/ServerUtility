@@ -9,7 +9,6 @@ import dev.deepslate.serverutility.command.GameCommand
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
-import net.minecraft.core.UUIDUtil
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
@@ -56,6 +55,15 @@ object SetHome : GameCommand {
                 ).apply(instance, ::HomeRecord)
             }
         }
+
+        override fun hashCode(): Int = name.hashCode()
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            other as HomeRecord
+            return name == other.name
+        }
     }
 
 //    data class HomeRecordContainer(val map: Map<String, Set<HomeRecord>> = emptyMap()) {
@@ -84,8 +92,10 @@ object SetHome : GameCommand {
             private val setCodec =
                 HomeRecord.CODEC.listOf().xmap(Iterable<HomeRecord>::toSet, Iterable<HomeRecord>::toList)
 
+            private val stringBaseUUIDCodec = Codec.STRING.xmap(UUID::fromString, UUID::toString)
+
             private val mapCodec: Codec<Map<UUID, Set<HomeRecord>>> =
-                Codec.unboundedMap(UUIDUtil.CODEC, setCodec)
+                Codec.unboundedMap(stringBaseUUIDCodec, setCodec)
 
             const val KEY = "homes"
 

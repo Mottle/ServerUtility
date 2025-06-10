@@ -17,7 +17,7 @@ object ListHome : GameCommand {
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
-        val homeStorage = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.get(
+        val homeStorage = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.computeIfAbsent(
             SetHome.SavedHomes.FACTORY, SetHome.SavedHomes.KEY
         ) ?: return 0
         val homes = homeStorage.query(player)

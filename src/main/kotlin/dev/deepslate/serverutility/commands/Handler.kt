@@ -3,9 +3,11 @@ package dev.deepslate.serverutility.commands
 import dev.deepslate.serverutility.ServerUtility
 import dev.deepslate.serverutility.command.CommandConverter
 import dev.deepslate.serverutility.permission.PermissionManager
+import net.minecraft.network.chat.Component
 import net.neoforged.bus.api.EventPriority
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
+import net.neoforged.neoforge.event.CommandEvent
 import net.neoforged.neoforge.event.RegisterCommandsEvent
 import org.slf4j.LoggerFactory
 
@@ -31,6 +33,43 @@ object Handler {
                 logger.error("Failed to register command ${cmd.asContextString()}.")
                 logger.error(e.stackTraceToString())
             }
+        }
+    }
+
+    val permissionRequired = mapOf(
+        "gamemode" to "minecraft.gamemode",
+        "tp" to "minecraft.teleport",
+        "ban" to "minecraft.ban",
+        "unban" to "minecraft.unban",
+        "kick" to "minecraft.kick",
+        "op" to "minecraft.op",
+        "deop" to "minecraft.deop",
+        "whitelist" to "minecraft.whitelist",
+        "attribute" to "minecraft.attribute",
+        "ban-ip" to "minecraft.ban_ip",
+        "clear" to "minecraft.clear",
+        "damage" to "minecraft.damage",
+        "data" to "minecraft.data",
+        "datapack" to "minecraft.datapack",
+    )
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    fun onUseCommand(event: CommandEvent) {
+        val context = event.parseResults.context
+
+        if (!context.source.isPlayer) return
+        if (event.exception != null) return
+        if (context.nodes.isEmpty()) return
+
+        val commandText = context.nodes.first().node.usageText
+
+        if (commandText !in permissionRequired) return
+
+        val permissionReq = permissionRequired[commandText]!!
+
+        if (!PermissionManager.query(context.source.player!!, permissionReq).asBooleanStrictly()) {
+            context.source.sendFailure(Component.literal("You do not have permission to use this command."))
+            event.isCanceled = true
         }
     }
 }
