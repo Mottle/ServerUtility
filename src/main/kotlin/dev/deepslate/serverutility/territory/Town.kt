@@ -2,7 +2,7 @@ package dev.deepslate.serverutility.territory
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import dev.deepslate.serverutility.territory.protection.Protection
+import dev.deepslate.serverutility.territory.protection.TownProtection
 import dev.deepslate.serverutility.utils.SnowID
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.chat.Component
@@ -16,7 +16,7 @@ data class Town(
     val territoryIDs: List<SnowID>,
     val members: List<UUID>,
     val displayName: Component,
-    val protection: Protection = Protection()
+    val protection: TownProtection = TownProtection()
 ) {
     companion object {
         val CODEC: Codec<Town> = RecordCodecBuilder.create { instance ->

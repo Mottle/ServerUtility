@@ -13,7 +13,7 @@ object ListHome : GameCommand {
 
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = emptyMap()
 
-    override val permissionRequired: String? = "serverutility.home.list"
+    override val permissionRequired: String? = "serverutility.command.home.list"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0

@@ -13,7 +13,7 @@ object SpawnHomeDefault : GameCommand {
 
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = emptyMap()
 
-    override val permissionRequired: String? = "serverutility.home.spawn"
+    override val permissionRequired: String? = "serverutility.command.home.spawn"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0

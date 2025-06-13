@@ -1,7 +1,8 @@
 package dev.deepslate.serverutility.territory
 
 import dev.deepslate.serverutility.ServerUtility
-import dev.deepslate.serverutility.territory.protection.Protection
+import dev.deepslate.serverutility.permission.PermissionQueryResult
+import dev.deepslate.serverutility.territory.protection.WildProtection
 import dev.deepslate.serverutility.territory.protection.permission.ProtectionPermission
 import dev.deepslate.serverutility.utils.SnowID
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
@@ -24,6 +25,16 @@ import java.util.*
 object TownManager {
 
     private val logger = LoggerFactory.getLogger(TownManager::class.java)
+
+    private val tempPasses = mutableSetOf<UUID>()
+
+    fun addTempPass(uuid: UUID) {
+        tempPasses += uuid
+    }
+
+    fun removeTempPass(uuid: UUID) {
+        tempPasses -= uuid
+    }
 
 //    companion object {
 //        private val logger = LoggerFactory.getLogger(TownManager::class.java)
@@ -92,7 +103,7 @@ object TownManager {
         }
     }
 
-    var wildProtection: Protection = Protection()
+    var wildProtection: WildProtection = WildProtection()
         private set
 
     private val managedTown = Long2ObjectOpenHashMap<Town>()
@@ -107,8 +118,9 @@ object TownManager {
         }
     }
 
-    fun queryPermission(chunkPos: ChunkPos, uuid: UUID, permission: ProtectionPermission) = (get(chunkPos)?.protection
-        ?: wildProtection).query(uuid, permission)
+    fun queryPermission(chunkPos: ChunkPos, uuid: UUID, permission: ProtectionPermission) =
+        if (uuid in tempPasses) PermissionQueryResult.ALLOW else (get(chunkPos)?.protection
+            ?: wildProtection).query(uuid, permission)
 
     fun queryPermission(blockPos: BlockPos, uuid: UUID, permission: ProtectionPermission) =
         queryPermission(ChunkPos(blockPos), uuid, permission)

@@ -14,6 +14,7 @@ object Commands {
             commands += SpawnHomeDefault
             commands += Suicide
             commands += Fly
+            commands += ProtectionPass
         }
     }
 }

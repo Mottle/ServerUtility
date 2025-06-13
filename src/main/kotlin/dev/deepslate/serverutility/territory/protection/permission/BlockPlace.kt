@@ -2,6 +2,7 @@ package dev.deepslate.serverutility.territory.protection.permission
 
 import dev.deepslate.serverutility.ServerUtility
 import dev.deepslate.serverutility.territory.TownManager
+import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Player
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -16,6 +17,7 @@ data object BlockPlace : ProtectionPermission {
 
             if (!TownManager.queryPermission(event.pos, player, BlockPlace).asBooleanWeakly()) {
                 event.isCanceled = true
+                player.sendSystemMessage(Component.literal("You do not have permission to place blocks here!"))
             }
         }
     }
