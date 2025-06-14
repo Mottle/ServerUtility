@@ -20,6 +20,8 @@ object Commands {
             commands += ProtectionPassOther
             commands += Feed
             commands += FeedOther
+            commands += Heal
+            commands += HealOther
         }
     }
 }
