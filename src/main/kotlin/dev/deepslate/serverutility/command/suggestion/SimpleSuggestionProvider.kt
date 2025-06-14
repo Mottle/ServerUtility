@@ -23,7 +23,7 @@ class SimpleSuggestionProvider(val factory: (CommandContext<CommandSourceStack>)
     }
 
     companion object {
-        val SERVER_PLAYER_NAME = SimpleSuggestionProvider { it.source.server.playerNames.toList() }
+        val ONLINE_PLAYER_NAME = SimpleSuggestionProvider { it.source.server.playerNames.toList() }
 
 //        val RACE_ID = SimpleSuggestionProvider { _ ->
 //            Races.REGISTRY.keySet().map(ResourceLocation::toString)

@@ -10,11 +10,16 @@ object Commands {
             commands += SetHome
             commands += SetHomeDefault
             commands += ListHome
+            commands += ListHomeOther
             commands += SpawnHome
             commands += SpawnHomeDefault
             commands += Suicide
             commands += Fly
+            commands += FlyOther
             commands += ProtectionPass
+            commands += ProtectionPassOther
+            commands += Feed
+            commands += FeedOther
         }
     }
 }

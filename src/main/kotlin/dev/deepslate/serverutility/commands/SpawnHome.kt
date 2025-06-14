@@ -19,9 +19,7 @@ object SpawnHome : GameCommand {
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
-        val homeStorage = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.computeIfAbsent(
-            SetHome.SavedHomes.FACTORY, SetHome.SavedHomes.KEY
-        ) ?: return 0
+        val homeStorage = SetHome.obtainHomeStorage() ?: throw CommandRuntimeException.of("Home storage is null.")
         val homeName = StringArgumentType.getString(context, "name")
         val home = homeStorage.query(player, homeName)
 

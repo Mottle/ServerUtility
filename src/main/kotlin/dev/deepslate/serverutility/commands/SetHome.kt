@@ -20,6 +20,11 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks
 import java.util.*
 
 object SetHome : GameCommand {
+
+    fun obtainHomeStorage() = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.computeIfAbsent(
+        SetHome.SavedHomes.FACTORY, SetHome.SavedHomes.KEY
+    )
+
     override val source: String
         get() = "sethome %s<name>"
 
@@ -29,9 +34,7 @@ object SetHome : GameCommand {
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
-        val homes = ServerLifecycleHooks.getCurrentServer()?.overworld()?.dataStorage?.computeIfAbsent(
-            SavedHomes.FACTORY, SavedHomes.KEY
-        ) ?: throw CommandRuntimeException.of("Home storage is null.")
+        val homes = obtainHomeStorage() ?: throw CommandRuntimeException.of("Home storage is null.")
 
         homes.insert(
             player, HomeRecord(
