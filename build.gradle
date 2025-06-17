@@ -110,6 +110,7 @@ dependencies {
     implementation 'thedarkcolour:kotlinforforge-neoforge:5.8.0'
 
     implementation 'com.github.yitter:yitter-idgenerator:1.0.6'
+    jarJar('com.github.yitter:yitter-idgenerator:1.0.6')
 
     compileOnly 'net.luckperms:api:5.4'
 
