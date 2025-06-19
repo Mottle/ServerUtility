@@ -22,6 +22,8 @@ object Commands {
             commands += FeedOther
             commands += Heal
             commands += HealOther
+            commands += CreateTown
+            commands += ListTowns
         }
     }
 }

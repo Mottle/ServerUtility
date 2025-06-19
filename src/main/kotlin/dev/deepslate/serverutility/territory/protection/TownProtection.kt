@@ -5,17 +5,16 @@ import dev.deepslate.serverutility.territory.protection.group.DefaultGroup
 import dev.deepslate.serverutility.territory.protection.group.PermissionGroup
 import dev.deepslate.serverutility.territory.protection.permission.ProtectionPermission
 import dev.deepslate.serverutility.utils.SnowID
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import net.minecraft.world.entity.player.Player
 import java.util.*
 
-class TownProtection : Protection {
+data class TownProtection(
     // player uuid -> group snowID
-    private val permissionRecords = emptyMap<UUID, SnowID>()
+    private val permissionRecords: Map<UUID, SnowID> = emptyMap(),
+    private val fallbackGroup: DefaultGroup = DefaultGroup,
+    private val groups: Map<Long, PermissionGroup> = HashMap<Long, PermissionGroup>(),
+) : Protection {
 
-    private val fallbackGroup = DefaultGroup
-
-    private val groups = Long2ObjectOpenHashMap<PermissionGroup>()
 
     operator fun get(uuid: UUID): PermissionGroup = permissionRecords[uuid]?.let { groups[it.value] } ?: fallbackGroup
 
@@ -24,4 +23,17 @@ class TownProtection : Protection {
     override fun query(uuid: UUID, action: ProtectionPermission): PermissionQueryResult = get(uuid).query(action)
 
     override fun queryDefault(action: ProtectionPermission) = fallbackGroup.query(action)
+
+    fun addGroup(group: PermissionGroup) = copy(groups = groups + (group.id.value to group))
+
+    fun removeGroup(group: PermissionGroup) = copy(groups = groups - group.id.value)
+
+    fun addPermissionRecord(uuid: UUID, group: PermissionGroup) =
+        copy(permissionRecords = permissionRecords + (uuid to group.id))
+
+    fun removePermissionRecord(uuid: UUID) = copy(permissionRecords = permissionRecords - uuid)
+
+    fun addPermissionRecord(player: Player, group: PermissionGroup) = addPermissionRecord(player.uuid, group)
+
+    fun removePermissionRecord(player: Player) = removePermissionRecord(player.uuid)
 }
