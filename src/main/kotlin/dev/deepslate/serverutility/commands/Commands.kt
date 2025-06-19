@@ -24,6 +24,7 @@ object Commands {
             commands += HealOther
             commands += CreateTown
             commands += ListTowns
+            commands += RemoveTown
         }
     }
 }

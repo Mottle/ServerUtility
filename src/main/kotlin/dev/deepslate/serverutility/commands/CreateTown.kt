@@ -51,6 +51,7 @@ object CreateTown : GameCommand {
 
         TerritoryManager.manage(territory)
         TownManager.manage(updatedTown)
+        TownManager.applyTown(player, updatedTown)
 
         context.source.sendSuccess({ Component.literal("Town created.").withStyle(ChatFormatting.GREEN) }, false)
         return Command.SINGLE_SUCCESS

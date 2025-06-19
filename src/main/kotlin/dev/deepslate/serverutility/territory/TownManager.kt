@@ -16,6 +16,7 @@ import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.saveddata.SavedData
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
+import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.server.ServerStartedEvent
 import net.neoforged.neoforge.event.server.ServerStoppingEvent
 import org.slf4j.LoggerFactory
@@ -38,6 +39,14 @@ object TownManager {
     fun towns() = managedTown.values.toList()
 
     fun town(player: Player) = player.getData(ModAttachments.TOWN_BELONG).let { this[it] }
+
+    fun applyTown(player: Player, town: Town) {
+        player.setData(ModAttachments.TOWN_BELONG, town.id)
+    }
+
+    fun deapplyTown(player: Player) {
+        player.setData(ModAttachments.TOWN_BELONG, SnowID.EMPTY)
+    }
 
 //    companion object {
 //        private val logger = LoggerFactory.getLogger(TownManager::class.java)
@@ -104,6 +113,15 @@ object TownManager {
             logger.info("Saved ${data.size} towns.")
             logger.info("Saving towns finished.")
         }
+
+        @SubscribeEvent
+        fun onPlayerLogin(event: PlayerEvent.PlayerLoggedInEvent) {
+            val player = event.entity
+            val town = town(player)
+
+            if (town != null) deapplyTown(player)
+            logger.info("Player ${player.name} logged in. Town not existed, deapplied.")
+        }
     }
 
     var wildProtection: WildProtection = WildProtection()
@@ -146,6 +164,10 @@ object TownManager {
 
     fun manage(town: Town) {
         managedTown[town.id.value] = town
+    }
+
+    fun unmanage(town: Town) {
+        managedTown.remove(town.id.value)
     }
 
     operator fun get(id: SnowID): Town? = managedTown[id.value]
