@@ -38,6 +38,17 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
             managerMap[territory.dimension]?.manage(territory)
         }
 
+        fun unmanage(territory: Territory) {
+            managerMap[territory.dimension]?.unmanage(territory)
+        }
+
+        fun unmanage(id: SnowID) {
+            val territory = get(id)
+            if (territory != null) {
+                unmanage(territory)
+            }
+        }
+
         private val logger = LoggerFactory.getLogger(TerritoryManager::class.java)
     }
 
@@ -91,6 +102,14 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
         managedTerritory[territory.id.value] = territory
     }
 
+    fun unmanage(territory: Territory) {
+        managedTerritory.remove(territory.id.value)
+    }
+
+    fun unmanage(id: SnowID) {
+        managedTerritory.remove(id.value)
+    }
+
     operator fun get(id: SnowID): Territory? = managedTerritory[id.value]
 
     fun includes(chunkPos: ChunkPos) = managedTerritory.values.any { t -> t.contains(chunkPos) }
@@ -118,8 +137,7 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
 
                     return SavedTerritories(list)
                 } catch (e: IllegalStateException) {
-                    logger.error("Failed to load territories.")
-                    logger.error(e.toString())
+                    logger.error("Failed to load territories.", e)
                 }
                 return of()
             }
@@ -127,11 +145,7 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
 
 
         init {
-            markUnsaved()
-        }
-
-        fun markUnsaved() {
-            isDirty = true
+            setDirty()
         }
 
         override fun save(tag: CompoundTag, registries: HolderLookup.Provider): CompoundTag {
@@ -139,8 +153,7 @@ class TerritoryManager(val forLevel: ResourceKey<Level>) {
                 val nbtData = codec.encodeStart(NbtOps.INSTANCE, data).orThrow
                 tag.put(KEY, nbtData)
             } catch (e: IllegalStateException) {
-                logger.error("Failed to save territories.")
-                logger.error(e.stackTraceToString())
+                logger.error("Failed to save territories.", e)
             }
 
             return tag

@@ -1,6 +1,5 @@
 package dev.deepslate.serverutility.territory
 
-import dev.deepslate.serverutility.ModAttachments
 import dev.deepslate.serverutility.ServerUtility
 import dev.deepslate.serverutility.permission.PermissionQueryResult
 import dev.deepslate.serverutility.territory.protection.WildProtection
@@ -19,14 +18,18 @@ import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.event.entity.player.PlayerEvent
 import net.neoforged.neoforge.event.server.ServerStartedEvent
 import net.neoforged.neoforge.event.server.ServerStoppingEvent
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
 object TownManager {
 
-    private val logger = LoggerFactory.getLogger(TownManager::class.java)
+    val logger: Logger = LoggerFactory.getLogger(TownManager::class.java)
 
     private val tempPasses = mutableSetOf<UUID>()
+
+    var playerTownData: SavedPlayerTowns = SavedPlayerTowns()
+        private set
 
     fun addTempPass(uuid: UUID) {
         tempPasses += uuid
@@ -38,37 +41,22 @@ object TownManager {
 
     fun towns() = managedTown.values.toList()
 
-    fun town(player: Player) = player.getData(ModAttachments.TOWN_BELONG).let { this[it] }
+    fun town(player: Player) = playerTownData[player]?.let { this[it] }
 
     fun applyTown(player: Player, town: Town) {
-        player.setData(ModAttachments.TOWN_BELONG, town.id)
+        playerTownData.add(player, town)
+        playerTownData.setDirty()
     }
 
     fun deapplyTown(player: Player) {
-        player.setData(ModAttachments.TOWN_BELONG, SnowID.EMPTY)
+        playerTownData.remove(player)
+        playerTownData.setDirty()
     }
 
-//    companion object {
-//        private val logger = LoggerFactory.getLogger(TownManager::class.java)
-//
-//        val INSTANCE: TownManager = TownManager()
-//
-//        operator fun get(chunkPos: ChunkPos) = INSTANCE[chunkPos]
-//
-//        operator fun get(blockPos: BlockPos) = INSTANCE[ChunkPos(blockPos)]
-//
-//        fun queryPermission(chunkPos: ChunkPos, uuid: UUID, permission: ProtectionPermission) =
-//            INSTANCE.queryPermission(chunkPos, uuid, permission)
-//
-//        fun queryPermission(blockPos: BlockPos, uuid: UUID, permission: ProtectionPermission) =
-//            INSTANCE.queryPermission(ChunkPos(blockPos), uuid, permission)
-//
-//        fun queryPermission(chunkPos: ChunkPos, player: Player, permission: ProtectionPermission) =
-//            INSTANCE.queryPermission(chunkPos, player.uuid, permission)
-//
-//        fun queryPermission(blockPos: BlockPos, player: Player, permission: ProtectionPermission) =
-//            INSTANCE.queryPermission(blockPos, player.uuid, permission)
-//    }
+    fun deapplyTown(uuid: UUID) {
+        playerTownData.remove(uuid)
+        playerTownData.setDirty()
+    }
 
     @EventBusSubscriber(modid = ServerUtility.ID)
     object Handler {
@@ -97,7 +85,19 @@ object TownManager {
             logger.info("Loaded ${managedTown.size} towns.")
             logger.info("Loaded towns finished.")
 
-//            testCode()
+            logger.info("Loading player town data...")
+            playerTownData = overworld.dataStorage.get(SavedPlayerTowns.FACTORY, SavedPlayerTowns.KEY).let { data ->
+                if (data == null) {
+                    logger.info("No saved player town data found.")
+                    logger.info("Creating new player town data.")
+
+                    SavedPlayerTowns().let {
+                        overworld.dataStorage.set(SavedPlayerTowns.KEY, it)
+                        it
+                    }
+                } else data
+            }
+            logger.info("Loaded player town data finished.")
         }
 
         @SubscribeEvent
@@ -198,8 +198,7 @@ object TownManager {
 
                     return SavedTowns(list)
                 } catch (e: IllegalStateException) {
-                    logger.error("Failed to load towns.")
-                    logger.error(e.stackTraceToString())
+                    logger.error("Failed to load towns.", e)
                 }
                 return of()
             }
@@ -210,7 +209,7 @@ object TownManager {
         }
 
         init {
-            markUnsaved()
+            setDirty()
         }
 
         override fun save(tag: CompoundTag, registries: HolderLookup.Provider): CompoundTag {
@@ -218,15 +217,10 @@ object TownManager {
                 val nbt = codec.encodeStart(NbtOps.INSTANCE, data).orThrow
                 tag.put(KEY, nbt)
             } catch (e: IllegalStateException) {
-                logger.error("Failed to save towns.")
-                logger.error(e.stackTraceToString())
+                logger.error("Failed to save towns.", e)
             }
 
             return tag
-        }
-
-        fun markUnsaved() {
-            isDirty = true
         }
     }
 }
