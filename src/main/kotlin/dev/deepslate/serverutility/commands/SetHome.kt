@@ -43,7 +43,7 @@ object SetHome : GameCommand {
                 player.blockPosition()
             )
         )
-        homes.markUnsaved()
+        homes.setDirty()
 
         return Command.SINGLE_SUCCESS
     }
@@ -102,7 +102,7 @@ object SetHome : GameCommand {
 
             const val KEY = "homes"
 
-            fun of() = SavedHomes(mutableMapOf()).apply { markUnsaved() }
+            fun of() = SavedHomes(mutableMapOf()).apply { setDirty() }
 
             fun load(tag: CompoundTag, registries: HolderLookup.Provider): SavedHomes {
                 val nbt = tag.get(KEY)
@@ -132,9 +132,5 @@ object SetHome : GameCommand {
         fun insert(uuid: UUID, home: HomeRecord) = homeMap.compute(uuid) { _, set -> (set ?: emptySet()) + home }
 
         fun insert(player: Player, home: HomeRecord) = insert(player.uuid, home)
-
-        fun markUnsaved() {
-            isDirty = true
-        }
     }
 }

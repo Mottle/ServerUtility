@@ -24,7 +24,7 @@ object ListHomeOther : GameCommand {
 
         if (otherPlayer == null) {
             context.source.sendSystemMessage(Component.literal("Player not found."))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         val homeStorage = SetHome.obtainHomeStorage() ?: throw CommandRuntimeException.of("Home storage is null.")

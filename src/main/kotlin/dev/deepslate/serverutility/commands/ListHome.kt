@@ -18,11 +18,13 @@ object ListHome : GameCommand {
         val player = context.source.player ?: return 0
         val homeStorage = SetHome.obtainHomeStorage() ?: throw CommandRuntimeException.of("Home storage is null.")
         val homes = homeStorage.query(player)
+
         if (homes != null && homes.isNotEmpty()) {
             context.source.sendSystemMessage(Component.literal(homes.joinToString("\n") { it.name }))
         } else {
             context.source.sendSystemMessage(Component.literal("No homes found."))
         }
+
         return Command.SINGLE_SUCCESS
     }
 }

@@ -2,6 +2,7 @@ package dev.deepslate.serverutility.territory
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import dev.deepslate.serverutility.api.InGameDebug
 import dev.deepslate.serverutility.territory.protection.TownProtection
 import dev.deepslate.serverutility.utils.SnowID
 import net.minecraft.ChatFormatting
@@ -20,7 +21,7 @@ data class Town(
     val displayName: Component = Component.literal(name).withStyle(ChatFormatting.BOLD)
         .withStyle(ChatFormatting.YELLOW),
     val protection: TownProtection = TownProtection()
-) {
+) : InGameDebug {
     companion object {
         val CODEC: Codec<Town> = RecordCodecBuilder.create { instance ->
             instance.group(
@@ -116,7 +117,7 @@ data class Town(
         operator fun minus(player: Player) = removeMemory(player.uuid)
     }
 
-    fun debugComponent(index: Int = -1): Component = index.let {
+    override fun debugComponent(index: Int): Component = index.let {
         if (it < 0) "-" else it.toString()
     }.let {
         Component.literal("----------$it----------\n").withStyle(ChatFormatting.WHITE).append(

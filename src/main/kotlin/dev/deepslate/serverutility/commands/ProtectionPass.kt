@@ -7,6 +7,7 @@ import dev.deepslate.serverutility.command.GameCommand
 import dev.deepslate.serverutility.command.suggestion.SimpleSuggestionProvider
 import dev.deepslate.serverutility.territory.TownManager
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.network.chat.Component
 
 object ProtectionPass : GameCommand {
     override val source: String = "protectionpass %s<flag>"
@@ -22,6 +23,11 @@ object ProtectionPass : GameCommand {
         val flag = context.getArgument("flag", String::class.java)
 
         if (flag != "enable") TownManager.removeTempPass(player.uuid) else TownManager.addTempPass(player.uuid)
+
+        context.source.sendSuccess(
+            { Component.literal("Protection pass ${if (flag == "enable") "enabled" else "disabled"}") },
+            true
+        )
 
         return Command.SINGLE_SUCCESS
     }

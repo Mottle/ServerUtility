@@ -6,6 +6,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import dev.deepslate.serverutility.command.GameCommand
 import dev.deepslate.serverutility.territory.TownManager
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.network.chat.Component
 
 object ListTowns : GameCommand {
     override val source: String = "listtowns"
@@ -17,8 +18,12 @@ object ListTowns : GameCommand {
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val towns = TownManager.towns()
 
-        towns.forEachIndexed { idx, town ->
-            context.source.sendSystemMessage(town.debugComponent(idx))
+        if (towns.isNotEmpty()) {
+            towns.forEachIndexed { idx, town ->
+                context.source.sendSystemMessage(town.debugComponent(idx))
+            }
+        } else {
+            context.source.sendSystemMessage(Component.literal("No towns found."))
         }
 
         return Command.SINGLE_SUCCESS

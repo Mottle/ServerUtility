@@ -30,6 +30,8 @@ object HealOther : GameCommand {
 
         otherPlayer.heal(otherPlayer.maxHealth)
 
+        context.source.sendSuccess({ Component.literal("Healed ${otherPlayer.name}!") }, false)
+
         return Command.SINGLE_SUCCESS
     }
 }

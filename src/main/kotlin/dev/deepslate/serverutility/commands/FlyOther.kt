@@ -27,13 +27,15 @@ object FlyOther : GameCommand {
 
         if (otherPlayer == null) {
             context.source.sendFailure(Component.literal("Player $other not found."))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         val attribute = otherPlayer.getAttribute(NeoForgeMod.CREATIVE_FLIGHT)
             ?: throw CommandRuntimeException.of("Player does not have creative flight attribute.")
 
         attribute.baseValue = if (flag == "enable") 1.0 else 0.0
+
+        context.source.sendSuccess({ Component.literal("Set $other's flight to $flag.") }, true)
 
         return Command.SINGLE_SUCCESS
     }

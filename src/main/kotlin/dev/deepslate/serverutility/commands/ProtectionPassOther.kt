@@ -28,7 +28,7 @@ object ProtectionPassOther : GameCommand {
 
         if (otherPlayer == null) {
             context.source.sendSystemMessage(Component.literal("Player not found."))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         when (flag) {

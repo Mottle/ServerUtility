@@ -29,19 +29,19 @@ object CreateTown : GameCommand {
             context.source.sendFailure(
                 Component.literal("Town with that name already exists.").withStyle(ChatFormatting.RED)
             )
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         if (TownManager.town(player) != null) {
             context.source.sendFailure(Component.literal("You are already in a town.").withStyle(ChatFormatting.RED))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         if (TerritoryManager[player.level()].includes(player.chunkPosition())) {
             context.source.sendFailure(
                 Component.literal("You are already in a territory.").withStyle(ChatFormatting.RED)
             )
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         val territory = Territory.of(player.level()) + player.chunkPosition()

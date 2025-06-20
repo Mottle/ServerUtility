@@ -7,6 +7,7 @@ import dev.deepslate.serverutility.command.GameCommand
 import dev.deepslate.serverutility.commands.SetHome.HomeRecord
 import dev.deepslate.serverutility.commands.SetHome.SavedHomes
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.network.chat.Component
 import net.neoforged.neoforge.server.ServerLifecycleHooks
 
 object SetHomeDefault : GameCommand {
@@ -28,7 +29,9 @@ object SetHomeDefault : GameCommand {
                 player.blockPosition()
             )
         )
-        homes.markUnsaved()
+        homes.setDirty()
+
+        context.source.sendSuccess({ Component.literal("Set home to ${player.blockPosition()}") }, true)
 
         return Command.SINGLE_SUCCESS
     }

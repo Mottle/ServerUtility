@@ -6,6 +6,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import dev.deepslate.serverutility.command.GameCommand
 import dev.deepslate.serverutility.command.suggestion.SimpleSuggestionProvider
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.network.chat.Component
 import net.neoforged.neoforge.common.NeoForgeMod
 
 object Fly : GameCommand {
@@ -25,6 +26,11 @@ object Fly : GameCommand {
             ?: throw CommandRuntimeException.of("Player does not have creative flight attribute.")
 
         attribute.baseValue = if (flag == "enable") 1.0 else 0.0
+
+        context.source.sendSuccess(
+            { Component.literal("Flight ${if (flag == "enable") "enabled" else "disabled"}") },
+            false
+        )
 
         return Command.SINGLE_SUCCESS
     }

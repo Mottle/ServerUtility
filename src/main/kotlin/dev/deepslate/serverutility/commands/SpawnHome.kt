@@ -25,7 +25,7 @@ object SpawnHome : GameCommand {
 
         if (home == null) {
             context.source.sendSystemMessage(Component.literal("No home with that name found."))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         val level = ServerLifecycleHooks.getCurrentServer()?.getLevel(home.dimension) ?: return 0

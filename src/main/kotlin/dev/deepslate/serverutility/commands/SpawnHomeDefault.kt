@@ -25,7 +25,7 @@ object SpawnHomeDefault : GameCommand {
 
         if (home == null) {
             context.source.sendSystemMessage(Component.literal("No home with that name found."))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
         val level = server.getLevel(home.dimension) ?: return 0
         player.teleportTo(level, home.pos.x.toDouble(), home.pos.y.toDouble(), home.pos.z.toDouble(), 0f, 0f)

@@ -31,6 +31,8 @@ object RemoveTown : GameCommand {
         town.territoryIDs.forEach(TerritoryManager::unmanage)
         (town.members.memories + town.members.owner).forEach(TownManager::deapplyTown)
 
+        context.source.sendSuccess({ Component.literal("Town removed!") }, false)
+
         return Command.SINGLE_SUCCESS
     }
 }

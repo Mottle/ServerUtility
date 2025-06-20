@@ -25,12 +25,14 @@ object FeedOther : GameCommand {
 
         if (otherPlayer == null) {
             context.source.sendFailure(Component.literal("Player not found!"))
-            return 0
+            return Command.SINGLE_SUCCESS
         }
 
         val foodData = otherPlayer.foodData
 
         foodData.eat(1000, 1000f)
+
+        context.source.sendSuccess({ Component.literal("Fed ${otherPlayer.name}!") }, false)
 
         return Command.SINGLE_SUCCESS
     }
