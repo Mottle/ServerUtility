@@ -15,7 +15,7 @@ object FeedOther : GameCommand {
         "player name" to SimpleSuggestionProvider.ONLINE_PLAYER_NAME
     )
 
-    override val permissionRequired: String? = "serverutility.command.feed"
+    override val permissionRequired: String = "serverutility.command.feed"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0

@@ -1,4 +1,4 @@
-package dev.deepslate.serverutility.commands
+package dev.deepslate.serverutility.commands.town
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -19,7 +19,7 @@ object CreateTown : GameCommand {
 
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = emptyMap()
 
-    override val permissionRequired: String = "serverutility.command.createtown"
+    override val permissionRequired: String = "serverutility.command.town.create"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
@@ -37,19 +37,19 @@ object CreateTown : GameCommand {
             return Command.SINGLE_SUCCESS
         }
 
-        if (TerritoryManager[player.level()].includes(player.chunkPosition())) {
+        if (TerritoryManager.Companion[player.level()].includes(player.chunkPosition())) {
             context.source.sendFailure(
                 Component.literal("You are already in a territory.").withStyle(ChatFormatting.RED)
             )
             return Command.SINGLE_SUCCESS
         }
 
-        val territory = Territory.of(player.level()) + player.chunkPosition()
-        val town = Town.of(player, name).addTerritory(territory)
+        val territory = Territory.Companion.of(player.level()) + player.chunkPosition()
+        val town = Town.Companion.of(player, name).addTerritory(territory)
         val updatedProtection = town.protection.addGroup(AllAllow).addPermissionRecord(player, AllAllow)
         val updatedTown = town.copy(protection = updatedProtection)
 
-        TerritoryManager.manage(territory)
+        TerritoryManager.Companion.manage(territory)
         TownManager.manage(updatedTown)
         TownManager.applyTown(player, updatedTown)
 

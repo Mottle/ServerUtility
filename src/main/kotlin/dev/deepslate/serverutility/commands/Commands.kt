@@ -1,6 +1,9 @@
 package dev.deepslate.serverutility.commands
 
 import dev.deepslate.serverutility.command.GameCommand
+import dev.deepslate.serverutility.commands.town.CreateTown
+import dev.deepslate.serverutility.commands.town.ListTowns
+import dev.deepslate.serverutility.commands.town.RemoveTown
 
 object Commands {
     val commands: ArrayList<GameCommand> = arrayListOf()

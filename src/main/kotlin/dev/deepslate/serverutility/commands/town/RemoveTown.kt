@@ -1,4 +1,4 @@
-package dev.deepslate.serverutility.commands
+package dev.deepslate.serverutility.commands.town
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.context.CommandContext
@@ -16,7 +16,7 @@ object RemoveTown : GameCommand {
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = mapOf(
         "name" to SimpleSuggestionProvider { TownManager.towns().map(Town::name) }
     )
-    override val permissionRequired: String = "serverutility.command.removetown"
+    override val permissionRequired: String = "serverutility.command.town.remove"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val name = context.getArgument("name", String::class.java)
@@ -28,7 +28,7 @@ object RemoveTown : GameCommand {
         }
 
         TownManager.unmanage(town)
-        town.territoryIDs.forEach(TerritoryManager::unmanage)
+        town.territoryIDs.forEach(TerritoryManager.Companion::unmanage)
         (town.members.memories + town.members.owner).forEach(TownManager::deapplyTown)
 
         context.source.sendSuccess({ Component.literal("Town removed!") }, false)

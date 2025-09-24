@@ -16,7 +16,7 @@ object Fly : GameCommand {
         "flag" to SimpleSuggestionProvider { _ -> listOf("enable", "disable") }
     )
 
-    override val permissionRequired: String? = "serverutility.command.fly"
+    override val permissionRequired: String = "serverutility.command.fly"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0

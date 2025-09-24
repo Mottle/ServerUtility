@@ -1,4 +1,4 @@
-package dev.deepslate.serverutility.commands
+package dev.deepslate.serverutility.commands.town
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.context.CommandContext
@@ -13,7 +13,7 @@ object ListTowns : GameCommand {
 
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = emptyMap()
 
-    override val permissionRequired: String = "serverutility.command.listtowns"
+    override val permissionRequired: String = "serverutility.command.town.list"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val towns = TownManager.towns()

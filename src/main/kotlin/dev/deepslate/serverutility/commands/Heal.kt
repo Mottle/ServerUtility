@@ -12,7 +12,7 @@ object Heal : GameCommand {
 
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = emptyMap()
 
-    override val permissionRequired: String? = "serverutility.command.heal"
+    override val permissionRequired: String = "serverutility.command.heal"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
