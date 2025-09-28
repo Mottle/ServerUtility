@@ -3,6 +3,7 @@ package dev.deepslate.serverutility.worldfixer
 import dev.deepslate.serverutility.Calendar
 import dev.deepslate.serverutility.ModAttachments
 import dev.deepslate.serverutility.ServerUtility
+import dev.deepslate.serverutility.configuration.WorldFixerConfiguration
 import dev.deepslate.serverutility.task.ScheduledExecutable
 import dev.deepslate.serverutility.task.ServerScheduler
 import dev.deepslate.serverutility.task.StateSetter
@@ -125,7 +126,8 @@ object WorldFixer {
 //            fixTasksMap[level] = fixTasks
         }
 
-        if (fixTasksMap.isNotEmpty()) ServerScheduler.INSTANCE.schedule(generateWorldFixExecutable(fixTasksMap))
+        if (fixTasksMap.isNotEmpty() && WorldFixerConfiguration.ENABLED.get())
+            ServerScheduler.INSTANCE.schedule(generateWorldFixExecutable(fixTasksMap))
     }
 
     fun generateWorldFixExecutable(fixList: Map<ResourceKey<Level>, MutableList<List<BlockStateChangeRecord>>>) =
