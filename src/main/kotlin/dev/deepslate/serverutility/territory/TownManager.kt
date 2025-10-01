@@ -120,7 +120,7 @@ object TownManager {
             val town = town(player)
 
             if (town != null) deapplyTown(player)
-            logger.info("Player ${player.name} logged in. Town not existed, deapplied.")
+            logger.info("Player ${player.name.tryCollapseToString() ?: "[ERROR]"} logged in. Town not existed, deapplied.")
         }
     }
 

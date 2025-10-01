@@ -18,7 +18,7 @@ object ProtectionPassOther : GameCommand {
         "player name" to SimpleSuggestionProvider.ONLINE_PLAYER_NAME
     )
 
-    override val permissionRequired: String? = "serverutility.commands.protectionpass"
+    override val permissionRequired: String? = "serverutility.commands.protection_pass.other"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0

@@ -15,7 +15,7 @@ object FeedOther : GameCommand {
         "player name" to SimpleSuggestionProvider.ONLINE_PLAYER_NAME
     )
 
-    override val permissionRequired: String = "serverutility.command.feed"
+    override val permissionRequired: String = "serverutility.command.feed.other"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
@@ -32,7 +32,7 @@ object FeedOther : GameCommand {
 
         foodData.eat(1000, 1000f)
 
-        context.source.sendSuccess({ Component.literal("Fed ${otherPlayer.name}!") }, false)
+        context.source.sendSuccess({ Component.literal("Fed $other!") }, false)
 
         return Command.SINGLE_SUCCESS
     }

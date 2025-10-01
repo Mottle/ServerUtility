@@ -15,7 +15,7 @@ object ListHomeOther : GameCommand {
         "player name" to SimpleSuggestionProvider.ONLINE_PLAYER_NAME
     )
 
-    override val permissionRequired: String = "serverutility.command.home.list"
+    override val permissionRequired: String = "serverutility.command.home.list.other"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
@@ -30,8 +30,9 @@ object ListHomeOther : GameCommand {
         val homeStorage = SetHome.obtainHomeStorage() ?: throw CommandRuntimeException.of("Home storage is null.")
         val homes = homeStorage.query(otherPlayer) ?: emptySet()
 
+        context.source.sendSystemMessage(Component.literal("$other's home:\n"))
         if (homes.isNotEmpty()) {
-            context.source.sendSystemMessage(Component.literal(homes.joinToString("\n") { it.name }))
+            context.source.sendSystemMessage(Component.literal(homes.joinToString("\n") { "${it.name} at ${it.pos}" }))
         } else {
             context.source.sendSystemMessage(Component.literal("No homes found."))
         }

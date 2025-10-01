@@ -12,7 +12,7 @@ object ListHome : GameCommand {
 
     override val suggestions: Map<String, SuggestionProvider<CommandSourceStack>> = emptyMap()
 
-    override val permissionRequired: String = "serverutility.command.home.list"
+    override val permissionRequired: String = "serverutility.command.home.list.self"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
@@ -20,7 +20,7 @@ object ListHome : GameCommand {
         val homes = homeStorage.query(player)
 
         if (homes != null && homes.isNotEmpty()) {
-            context.source.sendSystemMessage(Component.literal(homes.joinToString("\n") { it.name }))
+            context.source.sendSystemMessage(Component.literal(homes.joinToString("\n") { "${it.name} at ${it.pos}" }))
         } else {
             context.source.sendSystemMessage(Component.literal("No homes found."))
         }

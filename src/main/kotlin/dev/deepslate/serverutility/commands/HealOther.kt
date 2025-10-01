@@ -16,7 +16,7 @@ object HealOther : GameCommand {
         "player name" to SimpleSuggestionProvider.ONLINE_PLAYER_NAME
     )
 
-    override val permissionRequired: String = "serverutility.command.heal"
+    override val permissionRequired: String = "serverutility.command.heal.other"
 
     override fun execute(context: CommandContext<CommandSourceStack>): Int {
         val player = context.source.player ?: return 0
@@ -30,7 +30,7 @@ object HealOther : GameCommand {
 
         otherPlayer.heal(otherPlayer.maxHealth)
 
-        context.source.sendSuccess({ Component.literal("Healed ${otherPlayer.name}!") }, false)
+        context.source.sendSuccess({ Component.literal("Healed $other!") }, false)
 
         return Command.SINGLE_SUCCESS
     }
