@@ -89,7 +89,7 @@ object WorldFixer {
 
         val tickInterval = 20 * 10
         val maxFixPerTick = 5
-        val fixDelay = 20 * 60 * 60
+//        val fixDelay = 20 * 60 * 60
 //        val maxFixed = tickInterval * maxFixPerTick
 
         if (ticks % tickInterval != 0) return
@@ -104,7 +104,8 @@ object WorldFixer {
                     .filter { (_, r) -> r.isNotEmpty() }
 
             for ((chunk, record) in chunkRecords) {
-                val chunkFix = record.takeWith(maxFixPerTick) { r -> r.stamp < Calendar.stamp - fixDelay }
+                val chunkFix =
+                    record.takeWith(maxFixPerTick) { r -> r.stamp < Calendar.stamp - WorldFixerConfiguration.FIX_DELAY.get() }
 
                 if (chunkFix.isEmpty()) continue
 
