@@ -12,7 +12,7 @@ import net.neoforged.neoforge.event.level.ExplosionEvent
 object CreeperExplosionHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onExplosion(event: ExplosionEvent.Detonate) {
-        if (!WorldFixerConfiguration.CREEPER_EXPLOSION_DESTROY_BLOCK.get()) return
+        if (WorldFixerConfiguration.CREEPER_EXPLOSION_DESTROY_BLOCK.get()) return
         if (event.explosion.directSourceEntity !is Creeper) return
 
         event.affectedBlocks.clear()
