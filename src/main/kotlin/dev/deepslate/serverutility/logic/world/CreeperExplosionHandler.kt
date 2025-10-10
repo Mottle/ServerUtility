@@ -1,4 +1,4 @@
-package dev.deepslate.serverutility.logic
+package dev.deepslate.serverutility.logic.world
 
 import dev.deepslate.serverutility.ServerUtility
 import dev.deepslate.serverutility.configuration.WorldProtectionConfiguration

@@ -21,5 +21,10 @@ object WorldProtectionConfiguration {
             .define("creeper_explosion_destroy_block", true)
 
     @JvmStatic
+    val TNT_EXPLOSION_DESTROY_BLOCK: ModConfigSpec.BooleanValue =
+        builder.comment("should TNT explosion destroy blocks(default true)")
+            .define("tnt_explosion_destroy_block", true)
+
+    @JvmStatic
     val SPEC: ModConfigSpec = builder.build()
 }
