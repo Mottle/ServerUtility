@@ -2,7 +2,7 @@ package dev.deepslate.serverutility
 
 import com.github.yitter.contract.IdGeneratorOptions
 import com.github.yitter.idgen.YitIdHelper
-import dev.deepslate.serverutility.configuration.WorldFixerConfiguration
+import dev.deepslate.serverutility.configuration.WorldProtectionConfiguration
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
@@ -28,6 +28,6 @@ class ServerUtility(bus: IEventBus, container: ModContainer) {
 
         ModAttachments.REGISTRY.register(MOD_BUS)
 
-        container.registerConfig(ModConfig.Type.SERVER, WorldFixerConfiguration.SPEC)
+        container.registerConfig(ModConfig.Type.SERVER, WorldProtectionConfiguration.SPEC)
     }
 }

@@ -2,16 +2,16 @@ package dev.deepslate.serverutility.configuration
 
 import net.neoforged.neoforge.common.ModConfigSpec
 
-object WorldFixerConfiguration {
+object WorldProtectionConfiguration {
     @JvmStatic
     private val builder = ModConfigSpec.Builder()
 
     @JvmStatic
-    val ENABLED: ModConfigSpec.BooleanValue =
-        builder.comment("enable world fixer(default false)").define("enabled", false)
+    val AUTO_FIX_ENABLED: ModConfigSpec.BooleanValue =
+        builder.comment("enable world auto fix(default false)").define("enabled", false)
 
     @JvmStatic
-    val FIX_DELAY: ModConfigSpec.IntValue = builder
+    val AUTO_FIX_DELAY: ModConfigSpec.IntValue = builder
         .comment("delay between fixes in 20 tick(second, default 3600)")
         .defineInRange("fix_delay", 3600, 1, Int.MAX_VALUE)
 

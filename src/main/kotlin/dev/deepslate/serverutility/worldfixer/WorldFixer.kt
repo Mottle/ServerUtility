@@ -3,7 +3,7 @@ package dev.deepslate.serverutility.worldfixer
 import dev.deepslate.serverutility.Calendar
 import dev.deepslate.serverutility.ModAttachments
 import dev.deepslate.serverutility.ServerUtility
-import dev.deepslate.serverutility.configuration.WorldFixerConfiguration
+import dev.deepslate.serverutility.configuration.WorldProtectionConfiguration
 import dev.deepslate.serverutility.task.ScheduledExecutable
 import dev.deepslate.serverutility.task.ServerScheduler
 import dev.deepslate.serverutility.task.StateSetter
@@ -105,7 +105,7 @@ object WorldFixer {
 
             for ((chunk, record) in chunkRecords) {
                 val chunkFix =
-                    record.takeWith(maxFixPerTick) { r -> r.stamp < Calendar.stamp - WorldFixerConfiguration.FIX_DELAY.get() }
+                    record.takeWith(maxFixPerTick) { r -> r.stamp < Calendar.stamp - WorldProtectionConfiguration.AUTO_FIX_DELAY.get() }
 
                 if (chunkFix.isEmpty()) continue
 
@@ -127,7 +127,7 @@ object WorldFixer {
 //            fixTasksMap[level] = fixTasks
         }
 
-        if (fixTasksMap.isNotEmpty() && WorldFixerConfiguration.ENABLED.get())
+        if (fixTasksMap.isNotEmpty() && WorldProtectionConfiguration.AUTO_FIX_ENABLED.get())
             ServerScheduler.INSTANCE.schedule(generateWorldFixExecutable(fixTasksMap))
     }
 
