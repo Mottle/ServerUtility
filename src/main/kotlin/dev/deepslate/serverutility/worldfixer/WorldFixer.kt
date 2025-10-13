@@ -1,6 +1,6 @@
 package dev.deepslate.serverutility.worldfixer
 
-import dev.deepslate.serverutility.Calendar
+import dev.deepslate.serverutility.Horology
 import dev.deepslate.serverutility.ModAttachments
 import dev.deepslate.serverutility.ServerUtility
 import dev.deepslate.serverutility.configuration.WorldProtectionConfiguration
@@ -45,7 +45,7 @@ object WorldFixer {
         val level = event.level as? ServerLevel ?: return
 //        val dimension = level.dimension()
         val state = event.state
-        val stamp = Calendar.stamp
+        val stamp = Horology.stamp
         val record = BlockStateChangeRecord(stamp, event.pos, state)
 
         insert(record, level)
@@ -58,7 +58,7 @@ object WorldFixer {
         if (event.entity == null) return
 
         val level = event.level as? ServerLevel ?: return
-        val stamp = Calendar.stamp
+        val stamp = Horology.stamp
         val record = BlockStateChangeRecord(stamp, event.pos, Blocks.AIR.defaultBlockState())
 
         insert(record, level)
@@ -75,7 +75,7 @@ object WorldFixer {
         for (pos in blocks) {
             val state = level.getBlockState(pos)
             if (state.isAir) continue
-            val stamp = Calendar.stamp
+            val stamp = Horology.stamp
             val record = BlockStateChangeRecord(stamp, pos, state)
 
             insert(record, level)
@@ -105,7 +105,7 @@ object WorldFixer {
 
             for ((chunk, record) in chunkRecords) {
                 val chunkFix =
-                    record.takeWith(maxFixPerTick) { r -> r.stamp < Calendar.stamp - WorldProtectionConfiguration.AUTO_FIX_DELAY.get() }
+                    record.takeWith(maxFixPerTick) { r -> r.stamp < Horology.stamp - WorldProtectionConfiguration.AUTO_FIX_DELAY.get() }
 
                 if (chunkFix.isEmpty()) continue
 

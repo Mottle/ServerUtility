@@ -10,9 +10,9 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent
 import net.neoforged.neoforge.event.server.ServerStoppingEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
 
-sealed class Calendar {
+sealed class Horology {
     companion object {
-        val INSTANCE: Calendar = ServerCalendar()
+        val INSTANCE: Horology = ServerHorology()
 
         val stamp: Long
             get() = INSTANCE.time
@@ -39,7 +39,7 @@ sealed class Calendar {
     }
 
     //    @OnlyIn(Dist.DEDICATED_SERVER)
-    class ServerCalendar : Calendar() {
+    class ServerHorology : Horology() {
 //        override fun tick() {
 //            super.tick()
 //            if (TickHelper.checkServerSecondRate(10)) {
